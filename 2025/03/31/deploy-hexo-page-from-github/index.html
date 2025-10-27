@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW">
+<head>
+  <meta charset="utf-8">
+  
+  <title>用github repo儲存hexo專案，並Auto deploy到github page的repo上 | 三重流川風</title>
+  <meta name="author" content="YangJie Huang">
+  
+  <meta name="description" content="身為工程師，擁有一台筆電也是很合情合理並且合乎邏輯的事情那麼就會希望隨時隨地，只要有筆電，就可以輕鬆寫文章並且上傳，這次就來先試試看把整包hexo專案丟上github，並且在有更新時auto deploy吧！">
+  
+
+  <!-- Open Graph Meta Tags (Facebook, LinkedIn, etc.) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="用github repo儲存hexo專案，並Auto deploy到github page的repo上">
+  <meta property="og:description" content="">
+  <meta property="og:url" content="https://asc5543.github.io/2025/03/31/deploy-hexo-page-from-github/">
+  <meta property="og:image" content="">
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="用github repo儲存hexo專案，並Auto deploy到github page的repo上">
+  <meta name="twitter:description" content="">
+  <meta name="twitter:image" content="">
+
+  <!-- Google Site verification-->
+  <meta name="google-site-verification" content="BpA0tE69zmVk46-rynPkvv9L76KqAJtexcrktrN-5Ew" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="用github repo儲存hexo專案，並Auto deploy到github page的repo上"/>
+  <meta property="og:site_name" content="三重流川風"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  <link rel="shortcut icon" href="/favicon.png">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <!--[if lt IE 9]><script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Google Analytics -->
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DB28ZFLY9X"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-DB28ZFLY9X');
+</script>
+<!-- End Google Analytics -->
+
+
+<meta name="generator" content="Hexo 8.1.0"></head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">三重流川風</a></h1>
+  <h2><a href="/">科技、生活、娛樂</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Blog</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article id="post-deploy-hexo-page-from-github" class="h-entry post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time class="dt-published" datetime="2025-03-31T06:58:21.000Z"><a href="/2025/03/31/deploy-hexo-page-from-github/">2025-03-31</a></time>
+      
+      
+  
+    <h1 class="p-name title" itemprop="headline name">用github repo儲存hexo專案，並Auto deploy到github page的repo上</h1>
+  
+
+    </header>
+    <div class="e-content entry" itemprop="articleBody">
+      
+        <p>身為工程師，擁有一台筆電也是很合情合理並且合乎邏輯的事情<br>那麼就會希望隨時隨地，只要有筆電，就可以輕鬆寫文章並且上傳，這次就來先試試看把整包hexo專案丟上github，並且在有更新時auto deploy吧！</p>
+<hr>
+<span id="more"></span>
+
+<h2 id="動機與資料來源"><a href="#動機與資料來源" class="headerlink" title="動機與資料來源"></a>動機與資料來源</h2><p>由於自己除了桌電還有筆電，而hexo專案是在桌電上嘗試的。<br>但我會想在筆電上寫文章，這樣如果寫完之後還要開桌電deploy太麻煩了，因此就打算這樣做。</p>
+<p>資料來源一開始是從這篇開始研究的</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://op30132.github.io/2020/02/05/github-action/">Hexo + github actions 自動化部署</a></li>
+</ul>
+<p>以下依照我自己的理解，重新順一次邏輯，並且講一些自己踩到過的雷<br><br/><br/></p>
+<h2 id="如何Deploy"><a href="#如何Deploy" class="headerlink" title="如何Deploy"></a>如何Deploy</h2><p>就像我們在local一鍵部屬的方式一樣，仿照類似的作法在github上執行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
+<p>然而，在那之前我們也多做了一些事情</p>
+<ul>
+<li>安裝Node.js</li>
+<li>安裝hexo-cli</li>
+</ul>
+<p>因此，我們需要做的事情是，只要有update，我們就在Github Action上透過Node.js執行</p>
+<ol>
+<li>npm install -g hexo-cli</li>
+<li>hexo clean </li>
+<li>hexo generate </li>
+<li>hexo deploy</li>
+</ol>
+<p><br/><br/></p>
+<h2 id="透過ssh去deploy"><a href="#透過ssh去deploy" class="headerlink" title="透過ssh去deploy"></a>透過ssh去deploy</h2><p>由於我們需要透過ssh去deploy，因此我們需要建立ssh deploy key，這個可以透過以下command來建立</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -f [key_name]</span><br></pre></td></tr></table></figure>
+
+<p>執行完會產生public key跟private key。<br>然後我們把key分別設定到：</p>
+<ul>
+<li>private key：放置hexo專案的repo &gt; settings &gt; secrets  </li>
+<li>public key：放置頁面的repo &gt; settings &gt; deploy keys；記得這邊要把Allow write access勾起來</li>
+</ul>
+<p>設定完之後，就能透過ssh deploy啦！<br>但別忘了，我們要透過ssh deploy的關係，因此hexo的_config.yml裡面deploy的repo要改成</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git@github.com:[user/repo]</span><br></pre></td></tr></table></figure>
+<p><br/><br/></p>
+<h2 id="Deploy的workflow"><a href="#Deploy的workflow" class="headerlink" title="Deploy的workflow"></a>Deploy的workflow</h2><p>如同先前提到的，我們需要透過github action去deploy，而在github action裡面是透過.yml檔案去設定整個workflow的<br>除了直接在github的UI上做操作以外，也能直接在</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo專案 &gt; workflows</span><br></pre></td></tr></table></figure>
+<p>資料夾底下自己建立一個.yml檔案，這樣push上去之後就能夠在github action上看到這個workflow了喔！</p>
+<p>而我這邊寫的格式如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">name: HEXO CI</span><br><span class="line"></span><br><span class="line">on: # Trigger point</span><br><span class="line">  push: # 有push的時候執行，下面設定特定分支</span><br><span class="line">    branches:</span><br><span class="line">      - main</span><br><span class="line">  workflow_dispatch: #增加手動執行workflow的功能</span><br><span class="line"></span><br><span class="line">jobs:</span><br><span class="line">  build:</span><br><span class="line">    runs-on: ubuntu-latest</span><br><span class="line"></span><br><span class="line">    steps:</span><br><span class="line">      - uses: actions/checkout@v3</span><br><span class="line"></span><br><span class="line">      - name: Use Node.js LTS</span><br><span class="line">        uses: actions/setup-node@v3</span><br><span class="line">        with:</span><br><span class="line">          node-version: &#x27;lts/*&#x27;</span><br><span class="line"></span><br><span class="line">      - name: Configuration SSH # 設定SSH跟config</span><br><span class="line">        env:</span><br><span class="line">          HEXO_DEPLOY_PRI: $&#123;&#123;secrets.HEXO_DEPLOY_PRI&#125;&#125;</span><br><span class="line">        run: |</span><br><span class="line">          mkdir -p ~/.ssh/</span><br><span class="line">          echo &quot;$HEXO_DEPLOY_PRI&quot; | tr -d &#x27;\r&#x27; &gt; ~/.ssh/id_rsa</span><br><span class="line">          chmod 600 ~/.ssh/id_rsa</span><br><span class="line">          ssh-keyscan github.com &gt;&gt; ~/.ssh/known_hosts</span><br><span class="line">          git config --global user.name [username] # 記得改成自己的username</span><br><span class="line">          git config --global user.email [useremail] # 記得改成自己的email</span><br><span class="line"></span><br><span class="line">      - name: Install dependencies # 安裝hexo-cli</span><br><span class="line">        run: |</span><br><span class="line">          npm i -g hexo-cli</span><br><span class="line">          npm i</span><br><span class="line"></span><br><span class="line">      - name: Deploy hexo # Deploy hexo</span><br><span class="line">        run: |</span><br><span class="line">          hexo clean</span><br><span class="line">          hexo generate</span><br><span class="line">          hexo deploy</span><br></pre></td></tr></table></figure>
+<p>如果hexo專案本身沒問題，之前也有透過一鍵部屬deploy的話，把workflow設定好，專案丟上repo之後，基本上就完成嘍！<br>如此一來，無論你用哪台電腦，只要更新專案的repo，就能夠直接更新網頁了！<br><br/><br/></p>
+<h2 id="自己踩到的雷"><a href="#自己踩到的雷" class="headerlink" title="自己踩到的雷"></a>自己踩到的雷<br/></h2><h3 id="TypeError-Object-fromEntries-is-not-a-function"><a href="#TypeError-Object-fromEntries-is-not-a-function" class="headerlink" title="TypeError: Object.fromEntries is not a function"></a>TypeError: Object.fromEntries is not a function</h3><p>這個是因為參考資料中，指定node的版本號是10.x的關係，而這個function在Node.js 12+才有。<br>這邊把他改成LTS就沒這問題了<br/></p>
+<h3 id="ERROR-The-key-you-are-authenticating-with-has-been-marked-as-read-only"><a href="#ERROR-The-key-you-are-authenticating-with-has-been-marked-as-read-only" class="headerlink" title="ERROR: The key you are authenticating with has been marked as read only."></a>ERROR: The key you are authenticating with has been marked as read only.</h3><p>顧名思義，就是key要有寫入的權限，因此在設定deploy keys的時候記得要把Allow write access打勾<br><br/></p>
+<h3 id="網頁一片空白"><a href="#網頁一片空白" class="headerlink" title="網頁一片空白"></a>網頁一片空白</h3><p>這通常跟主題(themes)有關，如果用預設主題不會有這問題，然而如果是使用別的主題的話，有可能會發生</p>
+<ul>
+<li>Push上去的時候，因為主題本身是一個專案，因此push的時候不會跟著上去，導致hexo專案上面找不到該主題</li>
+<li>透過submodules解決這個問題，但由於有些頁面配置需要改到themes&#x2F;[主題名稱]&#x2F;_config.yml，因此也沒辦法跟著上去</li>
+</ul>
+<p>這邊我後來是直接clone主題下來，放在正確的位置(themes&#x2F;[主題名稱])，然後把他的.git資料夾刪掉<br>這樣同時解決這兩個問題，缺點只有在如果該主題的專案有更新沒辦法馬上吃到而已<br><br/><br/></p>
+<h2 id="結語"><a href="#結語" class="headerlink" title="結語"></a>結語</h2><p>這次實作了之後覺得github action實在是挺方便的，如果你也有類似需求的話，也能參考看看喔！</p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/%E7%A7%91%E6%8A%80/">科技</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/hexo%E6%95%99%E5%AD%B8/">hexo教學</a>
+  </div>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  <script src="https://utteranc.es/client.js"
+          repo="asc5543/blog-comments"
+          issue-term="pathname"
+          theme="github-dark"
+          crossorigin="anonymous"
+          async>
+  </script>
+
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="as_sitesearch" value="asc5543.github.io">
+  </form>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/%E7%A7%91%E6%8A%80/">科技</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/hexo%E6%95%99%E5%AD%B8/">hexo教學</a><small>3</small></li>
+  
+    <li><a href="/tags/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%AB/">工具分享</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+  <div class="widget widget-archives">
+    <h3 class="title">彙整</h3>
+    <div class="entry">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">四月 2025</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">三月 2025</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2025 YangJie Huang
+  
+</div>
+<div class="clearfix"></div></footer>
+  
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+
+
+<script src="/js/gallery.js"></script>
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script>
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
